@@ -5,7 +5,8 @@ import axios from 'axios';
 const LoveLuckChecker = () => {
   const [formData, setFormData] = useState({
     username: '',
-    partnerName: ''
+    partnerName: '',
+    loveLuckPercentage: null,  // Add this field to hold the generated percentage
   });
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -24,13 +25,21 @@ const LoveLuckChecker = () => {
     setResult(null);
 
     try {
-      // Sending form data to the API
-      await axios.post('https://prank-backend.onrender.com/api/users/register', formData);
-
       // Simulate processing delay
-      setTimeout(() => {
+      setTimeout(async () => {
         // Generate random love luck percentage between 70% and 96%
         const randomPercentage = Math.floor(Math.random() * 27) + 70;
+        
+        // Update the formData with the generated love luck percentage
+        const updatedFormData = {
+          ...formData,
+          loveLuckPercentage: randomPercentage
+        };
+
+        // Sending form data to the API, including the generated love luck percentage
+        await axios.post('https://prank-backend.onrender.com/api/users/register', updatedFormData);
+
+        // Update the UI with the result
         setIsLoading(false);
         setResult(randomPercentage);
       }, 2000);
@@ -51,7 +60,6 @@ const LoveLuckChecker = () => {
             transition={{ duration: 0.5 }}
             className="flex items-center space-x-4"
           >
-            {/* <img src="/logo.png" alt="Love Luck Logo" className="h-8 w-auto" /> */}
             <h1 className="text-xl font-bold">Love Luck Checker</h1>
           </motion.div>
         </div>
@@ -66,13 +74,6 @@ const LoveLuckChecker = () => {
         >
           <h1 className="text-4xl sm:text-6xl font-extrabold text-red-300 text-center mb-6 sm:mb-8 relative">
             Check Your Love Luck
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="absolute inset-0 -z-10"
-              style={{ background: 'radial-gradient(circle, rgba(255,0,0,0.1), rgba(255,0,0,0))' }}
-            />
           </h1>
           
           <motion.div
@@ -147,7 +148,7 @@ const LoveLuckChecker = () => {
         </motion.div>
       </main>
 
-      <footer className="bg-black text-white py-4 ">
+      <footer className="bg-black text-white py-4">
         <div className="container mx-auto text-center">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
